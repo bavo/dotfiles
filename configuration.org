@@ -1,0 +1,274 @@
+#+TITLE My Emacs configuration
+
+* Package manager
+** Melpa
+#+BEGIN_SRC emacs-lisp
+  (require 'package)
+  (package-initialize)
+  (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
+#+END_SRC
+** Use package
+#+BEGIN_SRC emacs-lisp
+  (unless (package-installed-p 'use-package)
+    (package-refresh-contents)
+    (package-install 'use-package))
+#+END_SRC
+   
+Always ensure packages are installed. If not, they will be downloaded from elpa. 
+#+BEGIN_SRC emacs-lisp
+  (setq use-package-always-ensure t)
+#+END_SRC
+
+* UI elements
+disable toolbar and menubar
+#+BEGIN_SRC emacs-lisp
+  (tool-bar-mode 0)
+  (menu-bar-mode 0)
+  (when window-system
+    (scroll-bar-mode -1))
+#+END_SRC
+
+* Org mode
+** Fontify source blocks
+Enable syntax highlighting inside source blocks
+#+BEGIN_SRC emacs-lisp
+  (setq org-src-fontify-natively t)
+#+END_SRC
+
+** use fancy bullets
+#+BEGIN_SRC emacs-lisp
+  (use-package org-bullets
+    :init (progn
+            (setq org-mode-hook ())
+            (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))))
+#+END_SRC
+   
+** Change clocktable indentation
+#+BEGIN_SRC emacs-lisp
+  (defun my-org-clocktable-indent-string (level)
+    (if (= level 1)
+        ""
+      (let ((str "."))
+        (while (> level 2)
+          (setq level (1- level)
+                str (concat str "..")))
+        (concat str "\\_"))))
+
+  (advice-add 'org-clocktable-indent-string :override #'my-org-clocktable-indent-string)
+#+END_SRC
+* Autocomplete 
+#+BEGIN_SRC emacs-lisp
+  (use-package auto-complete
+    :config (ac-config-default))
+#+END_SRC
+* spaceline
+  Use spaceline for showing all the information in the bottom
+#+BEGIN_SRC emacs-lisp
+  (defun start-nyan-if-not-in-terminal()
+    "start nyan cat mode if it can be displayed"
+    (when (display-graphic-p)
+      (nyan-mode)
+      (nyan-start-animation)))
+
+  (defun load-spaceline-theme()
+    "load the spaceline theme"
+    (progn
+      (load-theme 'spacemacs-dark t)
+      (start-nyan-if-not-in-terminal)
+      (spaceline-compile)))
+
+  (defun load-spaceline-theme-or-add-hook-to-load ()
+    "load the spaceline theme or add a hook to load it" 
+    (if (daemonp)
+        (add-hook 'after-make-frame-functions
+                  (lambda (frame)
+                    (select-frame frame)
+                    (if (window-system frame)
+                        (unless my:theme-window-loaded
+                          (if my:theme-terminal-loaded
+                              (enable-theme 'spacemacs-dark)
+                            (load-spaceline-theme))
+                          (setq my:theme-window-loaded t))
+                      (unless my:theme-terminal-loaded
+                        (if my:theme-window-loaded
+                            (enable-theme 'spacemacs-dark)
+                          (load-spaceline-theme))
+                        (setq my:theme-terminal-loaded) t)))))
+    (progn
+      (load-spaceline-theme)
+      (if (display-graphic-p)
+          (setq my:theme-window-loaded t)
+        (setq my:theme-terminal-loaded t))))
+
+  (use-package spaceline
+    :init (setq my:theme-window-loaded nil
+                my:theme-terminal-loaded nil)
+    :config
+    (progn
+      (require 'spaceline-config)
+      (spaceline-spacemacs-theme)
+      (setq powerline-height 20
+            powerline-default-separator 'wave
+            spaceline-highlight-face-func 'spaceline-highlight-face-evil-state)
+      (spaceline-toggle-minor-modes-off)
+      (load-spaceline-theme-or-add-hook-to-load)
+      (spaceline-helm-mode)))
+
+#+END_SRC
+* =evil= 
+** =evil-leader=
+#+BEGIN_SRC emacs-lisp
+  (use-package evil-leader
+               :config (progn
+                         (global-evil-leader-mode)
+                         (evil-leader/set-leader "<SPC>")
+                         (evil-leader/set-key
+                           "fe" 'open-config-file
+                           "bl" 'helm-mini)))
+#+END_SRC
+** =evil-mode=
+#+BEGIN_SRC emacs-lisp
+  (use-package evil
+               :config (progn
+                         (evil-mode 1)
+                         (setq x-select-enable-clipboard nil)))
+#+END_SRC
+** =evil-numbers=
+#+BEGIN_SRC emacs-lisp
+  (use-package evil-numbers
+               :bind (("C-c +" . evil-numbers/inc-at-pt)
+                      ("C-c -" . evil-numbers/dec-at-pt)))
+
+#+END_SRC
+** =evil-surround=
+#+BEGIN_SRC emacs-lisp
+  (use-package evil-surround
+               :config (global-evil-surround-mode))
+#+END_SRC
+** =evil-matchit=
+#+BEGIN_SRC emacs-lisp
+  (use-package evil-matchit
+    :config (global-evil-matchit-mode 1))
+#+END_SRC
+** =evil-escape=
+   Make jj exit from insert mode as used in most vim installations 
+   #+BEGIN_SRC emacs-lisp
+     (use-package evil-escape
+       :config (progn
+                 (setq-default evil-escape-key-sequence "kj")
+                 (setq-default evil-escape-delay 0.2)
+                 (evil-escape-mode 1)))
+   #+END_SRC
+** Switch to last buffer
+set C-tab to switch to the last buffer
+  #+BEGIN_SRC emacs-lisp
+      (global-set-key (kbd "<C-tab>") 'evil-switch-to-windows-last-buffer)
+  #+END_SRC
+** Open config file
+Opens my configuration file when i want to
+#+BEGIN_SRC emacs-lisp
+  (defun open-config-file ()
+    "opens the configuration file"
+    (interactive)
+    (switch-to-buffer (find-file "~/.emacs.d/configuration.org")))
+#+END_SRC
+
+** Open zsh terminal
+Open the zsh terminal without asking for confirmation
+#+BEGIN_SRC emacs-lisp
+  (defun open-zsh-terminal ()
+    "Open a new zsh terminal in emacs"
+    (interactive)
+    (term "/bin/zsh"))
+#+END_SRC
+* helm 
+  Use =helm= for everything
+#+BEGIN_SRC emacs-lisp
+  (use-package helm
+               :config (progn
+                         (helm-mode 1)
+                         (setq helm-buffers-fuzzy-matching t
+                               helm-recentf-fuzzy-match t))
+               :bind (("M-x"     . helm-M-x)
+                      ("C-x C-f" . helm-find-files)))
+#+END_SRC
+
+* Magit
+Magit a porcelain git editor (as said by the author). But this is by far the best
+git tool i've ever seen. 
+#+BEGIN_SRC emacs-lisp
+(use-package magit)
+(use-package evil-magit
+     :config (progn 
+               (setq magit-display-buffer-function 'magit-display-buffer-fullframe-status-v1)
+               (global-set-key (kbd "C-x g") 'magit-status)))
+#+END_SRC
+
+* Rainbow delimiters
+I use rainbow delimiter for programming elisp. Could not do it without it.
+
+#+BEGIN_SRC emacs-lisp
+  (use-package rainbow-delimiters
+               :init (add-hook 'prog-mode-hook #'rainbow-delimiters-mode))
+#+END_SRC
+* Which key
+  describe the possible keybindings when pressing part of a combination
+#+BEGIN_SRC emacs-lisp
+  (use-package which-key
+    :config (which-key-mode))
+#+END_SRC
+* Mode configuration
+Configure which mode must be enabled when opening a specific filetype.
+#+BEGIN_SRC emacs-lisp
+(add-to-list 'auto-mode-alist '("\\.adoc\\'" . adoc-mode))
+(add-to-list 'auto-mode-alist '("\\.org\\'" . org-mode))
+(add-to-list 'auto-mode-alist '("\\.log\\'" . auto-revert-mode))
+#+END_SRC
+
+* Ace window
+#+BEGIN_SRC emacs-lisp
+  (use-package ace-window
+    :config (progn
+              (setq aw-keys '(?q ?s ?d ?f ?g ?h ?j ?k ?l ?m))
+              (evil-leader/set-key "w" 'ace-window)))
+#+END_SRC
+
+* Projectile
+  #+BEGIN_SRC emacs-lisp
+    (use-package projectile
+      :config (projectile-global-mode))
+      
+    (use-package helm-projectile
+      :config (progn
+                (setq projectile-completion-system 'helm)
+                (helm-projectile-on)))
+  #+END_SRC
+* MAGDA stuff
+** Open a specific logging location
+   Function to open specific logging locations. All the locations should be configured in the logging-locations variable.
+   This is a AList with the name of the location as a key and the command to open the logging file as value.
+   #+BEGIN_SRC emacs-lisp
+     (setq logging-locations
+           '(("magdagui-dev" . "/ssh:magdagui-dev:/sp/spdata/magdagui/logs/magdagui.log")
+             ("magdagui-tni" . "/ssh:magdagui-tni:/sp/spdata/magdagui/logs/magdagui.log")
+             ("ms-magda-priv-dienst-gw" . "/ssh:weblogic-dev:/export/home/weblogic/wl_servers/ms_magda_priv_dienst_gw_01/logs/ms_magda_priv_dienst_gw_01.out")
+             ("ms-magda-ntpriv-dienst-gw" . "/ssh:weblogic-dev:/export/home/weblogic/wl_servers/ms_magda_ntpriv_dienst_gw_01/logs/ms_magda_ntpriv_dienst_gw_01.out")
+             ("ms-magda-conn" . "/ssh:weblogic-dev:/export/home/weblogic/wl_servers/ms_magda_conn_01/logs/ms_magda_conn_01.out")))
+
+     (defun open-logging ()
+       "opens logging in a new async buffer. New logging locations can be configured in the logging-locations variable."
+       (interactive)
+       (let ((log (completing-read "Selecteer logging: " logging-locations)))
+         (setq auto-revert-remote-files t)
+         (setq auto-revert-interval 2)
+         (auto-revert-mode)
+         (switch-to-buffer (find-file (cdr (assoc log logging-locations))))))
+   #+END_SRC
+** Open a list of personal JIRAs
+   Open my TODOs for magda
+#+BEGIN_SRC emacs-lisp
+(defun open-jiras ()
+  "opens a list of all my jira's in org mode"
+  (interactive)
+  (switch-to-buffer (find-file "~/Magda/JIRAS.org")))
+#+END_SRC
