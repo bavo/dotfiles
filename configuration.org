@@ -53,20 +53,6 @@ disable toolbar and menubar
             (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))))
 #+END_SRC
    
-** Change clocktable indentation
-#+BEGIN_SRC emacs-lis
-  (defun my-org-clocktable-indent-string (level)
-    (if (= level 1)
-        ""
-      (let ((str "."))
-        (while (> level 2)
-          (setq level (1- level)
-                str (concat str "..")))
-        (concat str "\\_"))))
-
-  (advice-add 'org-clocktable-indent-string :override #'my-org-clocktable-indent-string)
-#+END_SRC
-
 ** Set agenda files
 #+BEGIN_SRC emacs-lisp
   (setq org-agenda-files '("~/Magda/Org/"))
