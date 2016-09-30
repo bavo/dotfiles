@@ -38,9 +38,11 @@ disable toolbar and menubar
 
 ** use org mode
 #+BEGIN_SRC emacs-lisp
- (use-package org
-    :config (setq org-src-fontify-natively t))
-
+  (use-package org
+    :config (setq org-src-fontify-natively t
+                  org-todo-keywords '((sequence "TODO" "BLOC" "TEST" "DONE"))
+                  org-todo-keyword-faces '(("BLOC" . "red")
+                                           ("TEST" . "yellow"))))
 #+END_SRC
 
 ** use fancy bullets
