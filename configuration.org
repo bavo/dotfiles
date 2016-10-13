@@ -285,7 +285,8 @@ Configure which mode must be enabled when opening a specific filetype.
          (setq auto-revert-remote-files t)
          (setq auto-revert-interval 2)
          (auto-revert-mode)
-         (switch-to-buffer (find-file (cdr (assoc log logging-locations))))))
+         (switch-to-buffer (find-file (cdr (assoc log logging-locations))))
+	 (end-of-buffer)))
    #+END_SRC
 ** Open a list of personal JIRAs
    Open my TODOs for magda
