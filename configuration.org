@@ -20,11 +20,11 @@ Always ensure packages are installed. If not, they will be downloaded from elpa.
   (setq use-package-always-ensure t)
 #+END_SRC
 
-* UI elements
-disable toolbar and menubar
+* UI elementsqdisable toolbar and menubar
 #+BEGIN_SRC emacs-lisp
   (tool-bar-mode 0)
   (menu-bar-mode 0)
+  (setq inhibit-startup-screen t)
   (when window-system
     (scroll-bar-mode -1))
 #+END_SRC
@@ -42,7 +42,8 @@ disable toolbar and menubar
     :config (setq org-src-fontify-natively t
                   org-todo-keywords '((sequence "TODO" "BLOC" "TEST" "DONE"))
                   org-todo-keyword-faces '(("BLOC" . "red")
-                                           ("TEST" . "yellow"))))
+                                           ("TEST" . "yellow"))
+                  org-archive-location "/home/bavo/Magda/Org/archive.org_archive::"))
 #+END_SRC
 
 ** use fancy bullets
@@ -57,6 +58,40 @@ disable toolbar and menubar
 #+BEGIN_SRC emacs-lisp
   (setq org-agenda-files '("~/Magda/Org/"))
 #+END_SRC
+
+** Set custom task templates
+   Fist off, bind the =C-c c= key to the =org-capture= command
+   #+BEGIN_SRC emacs-lisp
+     (global-set-key (kbd "C-c c") 'org-capture)
+   #+END_SRC
+   
+   Next configure the templates that we are going to use: 
+   - JIRA: add a new jira to the timetracking file
+   #+BEGIN_SRC emacs-lisp
+     (setq org-capture-templates
+           '(("j" "Jira" entry (file+headline "/home/bavo/Magda/Org/timetracking.org" "TODO'S") (file "/home/bavo/Magda/Org/capture-templates/jira.org"))
+             ("d" "Businessdienst" entry (file+headline "/home/bavo/Magda/Org/timetracking.org" "TODO'S") (file "/home/bavo/Magda/Org/capture-templates/businessdienst.org"))
+             ("t" "TODO" entry (file+headline "/home/bavo/Magda/Org/timetracking.org" "TODO'S") "** TODO %^{Title}\n %^{description}")))
+   #+END_SRC
+   
+   Lastly configure the refiling parameteres. These parameters should
+   allow us to refile jira to subtrees. 
+   #+BEGIN_SRC emacs-lisp
+     (setq org-refile-targets '((nil :maxlevel . 2))
+           org-outline-path-complete-in-steps nil
+           org-refile-use-outline-path t)
+   #+END_SRC
+   
+** make custom clock print function
+   #+BEGIN_SRC emacs-lisp
+     (defun my:print-clocked-time ()
+       "Print the time of the currently clocked task"
+       (interactive)
+       (require 'org-clock)
+       (if (org-clocking-p)
+           (s-concat org-clock-heading)
+         (s-concat "slacking")))
+   #+END_SRC
 * Autocomplete 
 #+BEGIN_SRC emacs-lisp
   (use-package auto-complete
@@ -125,14 +160,16 @@ disable toolbar and menubar
                          (evil-leader/set-leader "<SPC>")
                          (evil-leader/set-key
                            "fe" 'open-config-file
-                           "bl" 'helm-mini)))
+                           "bl" 'helm-mini
+			   "y"  'clipboard-kill-ring-save)))
 #+END_SRC
 ** =evil-mode=
 #+BEGIN_SRC emacs-lisp
   (use-package evil
                :config (progn
                          (evil-mode 1)
-                         (setq x-select-enable-clipboard nil)))
+                         (setq x-select-enable-clipboard nil
+                               x-select-enable-primary t)))
 #+END_SRC
 ** =evil-numbers=
 #+BEGIN_SRC emacs-lisp
@@ -239,6 +276,33 @@ Configure which mode must be enabled when opening a specific filetype.
               (evil-leader/set-key "w" 'ace-window)))
 #+END_SRC
 
+
+** Don't delete last window
+   Create a new function that ask confirmation when killing the last
+   buffer. When trying to close the last buffer, the editor will ask
+   to kill the buffer instead. 
+#+BEGIN_SRC emacs-lisp
+  (defun my:quit-buffer ()
+    "Custom quit function that does not kill the last buffer. Instead it asks to kill the buffer isntead."
+    (interactive)
+    (if (one-window-p)
+        (if (y-or-n-p "Only one window open, kill buffer instead?")
+            (kill-buffer)
+          (delete-frame))
+      (delete-window)))
+
+  (defun my:save-and-quit-buffer ()
+    "save buffer and the call my custom quit function"
+    (interactive)
+    (save-buffer)
+    (my:quit-buffer))
+
+  (eval-after-load 'evil-ex
+    '(progn
+       (evil-ex-define-cmd "q[uit]" 'my:quit-buffer)
+       (evil-ex-define-cmd "wq" 'my:save-and-quit-buffer)))
+#+END_SRC
+
 * Projectile
   #+BEGIN_SRC emacs-lisp
     (use-package projectile
@@ -266,6 +330,13 @@ Configure which mode must be enabled when opening a specific filetype.
    version-control t)       ; use versioned backups
 
 #+END_SRC 
+* Mail
+  Use notmuch as a mail client
+#+BEGIN_SRC emacs-lisp
+  (use-package notmuch
+    :config (setq notmuch-search-oldest-first nil)
+    :bind (("C-c m" . notmuch)))
+#+END_SRC
 * MAGDA stuff
 ** Open a specific logging location
    Function to open specific logging locations. All the locations should be configured in the logging-locations variable.
@@ -276,7 +347,11 @@ Configure which mode must be enabled when opening a specific filetype.
              ("magdagui-tni" . "/ssh:magdagui-tni:/sp/spdata/magdagui/logs/magdagui.log")
              ("ms-magda-priv-dienst-gw" . "/ssh:weblogic-dev:/export/home/weblogic/wl_servers/ms_magda_priv_dienst_gw_01/logs/ms_magda_priv_dienst_gw_01.out")
              ("ms-magda-ntpriv-dienst-gw" . "/ssh:weblogic-dev:/export/home/weblogic/wl_servers/ms_magda_ntpriv_dienst_gw_01/logs/ms_magda_ntpriv_dienst_gw_01.out")
-             ("ms-magda-conn" . "/ssh:weblogic-dev:/export/home/weblogic/wl_servers/ms_magda_conn_01/logs/ms_magda_conn_01.out")))
+	     ("ms-magda-ntpriv-sched" . "/ssh:weblogic-dev:/export/home/weblogic/wl_servers/ms_magda_ntpriv_sched_01/logs/ms_magda_ntpriv_sched_01.out")
+	     ("SocZek.GeefLeefloonBedragen" . "/ssh:weblogic-dev:/var/opt/vipadmin/logs/soczek.geefleefloonbedragendienst-02.00/service.log")
+             ("ms-magda-conn" . "/ssh:weblogic-dev:/export/home/weblogic/wl_servers/ms_magda_conn_01/logs/ms_magda_conn_01.out")
+             ("ms-magda-admin" . "/ssh:weblogic-dev-admin:/export/weblogic/domains/magda_business/servers/AdminServer/logs/magda_business.log")))
+
 
      (defun open-logging ()
        "opens logging in a new async buffer. New logging locations can be configured in the logging-locations variable."
@@ -286,7 +361,7 @@ Configure which mode must be enabled when opening a specific filetype.
          (setq auto-revert-interval 2)
          (auto-revert-mode)
          (switch-to-buffer (find-file (cdr (assoc log logging-locations))))
-	 (end-of-buffer)))
+         (end-of-buffer)))
    #+END_SRC
 ** Open a list of personal JIRAs
    Open my TODOs for magda
