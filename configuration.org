@@ -20,14 +20,15 @@ Always ensure packages are installed. If not, they will be downloaded from elpa.
   (setq use-package-always-ensure t)
 #+END_SRC
 
-* UI elementsqdisable toolbar and menubar
-#+BEGIN_SRC emacs-lisp
-  (tool-bar-mode 0)
-  (menu-bar-mode 0)
-  (setq inhibit-startup-screen t)
-  (when window-system
-    (scroll-bar-mode -1))
-#+END_SRC
+* UI elements
+** disable toolbar and menubar
+ #+BEGIN_SRC emacs-lisp
+   (tool-bar-mode 0)
+   (menu-bar-mode 0)
+   (setq inhibit-startup-screen t)
+   (when window-system
+     (scroll-bar-mode -1))
+ #+END_SRC
 
 * Org mode
 ** Set org mode exporters
@@ -40,7 +41,7 @@ Always ensure packages are installed. If not, they will be downloaded from elpa.
 #+BEGIN_SRC emacs-lisp
   (use-package org
     :config (setq org-src-fontify-natively t
-                  org-todo-keywords '((sequence "TODO" "BLOC" "TEST" "DONE"))
+                  org-todo-keywords '((sequence "TODO(t)" "BLOC(b)" "TEST(e)" "DONE(d)"))
                   org-todo-keyword-faces '(("BLOC" . "red")
                                            ("TEST" . "yellow"))
                   org-archive-location "/home/bavo/Magda/Org/archive.org_archive::"))
@@ -71,7 +72,9 @@ Always ensure packages are installed. If not, they will be downloaded from elpa.
      (setq org-capture-templates
            '(("j" "Jira" entry (file+headline "/home/bavo/Magda/Org/timetracking.org" "TODO'S") (file "/home/bavo/Magda/Org/capture-templates/jira.org"))
              ("d" "Businessdienst" entry (file+headline "/home/bavo/Magda/Org/timetracking.org" "TODO'S") (file "/home/bavo/Magda/Org/capture-templates/businessdienst.org"))
-             ("t" "TODO" entry (file+headline "/home/bavo/Magda/Org/timetracking.org" "TODO'S") "** TODO %^{Title}\n %^{description}")))
+             ("b" "Baseline" entry (file+headline "/home/bavo/Magda/Org/timetracking.org" "TODO'S") (file "/home/bavo/Magda/Org/capture-templates/baseline.org"))
+             ("t" "TODO" entry (file+headline "/home/bavo/Magda/Org/timetracking.org" "TODO'S") "** TODO %^{Title}\n %^{description}")
+             ("m" "Meeting" entry (file+headline "/home/bavo/Magda/Org/timetracking.org" "Meetings") "** %^{Title}\n   SCHEDULED: %^T")))
    #+END_SRC
    
    Lastly configure the refiling parameteres. These parameters should
@@ -92,6 +95,30 @@ Always ensure packages are installed. If not, they will be downloaded from elpa.
            (s-concat org-clock-heading)
          (s-concat "slacking")))
    #+END_SRC
+   
+** org agenda
+#+BEGIN_SRC emacs-lisp
+  (require 'org-agenda)
+  (global-set-key (kbd "C-c a") 'org-agenda)
+  (define-key org-agenda-mode-map "j" 'org-agenda-next-item)
+  (define-key org-agenda-mode-map "k" 'org-agenda-previous-item)
+
+  (setq org-agenda-custom-commands
+        '(("c" "Simple agenda view"
+           ((agenda "")
+            (todo "BLOC")
+            (todo "TODO")))))
+#+END_SRC
+
+Create bind F6 to my custom agenda view 
+#+BEGIN_SRC emacs-lisp
+  (defun my:pop-to-org-agenda (&optional split)
+    "Visit the org agenda, in the current window or a SPLIT."
+    (interactive "P")
+    (org-agenda nil "c")
+    (when (not split)
+      (delete-other-windows)))
+#+END_SRC
 * Autocomplete 
 #+BEGIN_SRC emacs-lisp
   (use-package auto-complete
@@ -169,7 +196,8 @@ Always ensure packages are installed. If not, they will be downloaded from elpa.
                :config (progn
                          (evil-mode 1)
                          (setq x-select-enable-clipboard nil
-                               x-select-enable-primary t)))
+                               x-select-enable-primary t)
+                         (evil-set-initial-state 'calendar-mode 'emacs)))
 #+END_SRC
 ** =evil-numbers=
 #+BEGIN_SRC emacs-lisp
@@ -188,14 +216,38 @@ Always ensure packages are installed. If not, they will be downloaded from elpa.
   (use-package evil-matchit
     :config (global-evil-matchit-mode 1))
 #+END_SRC
-** =evil-escape=
-   Make jj exit from insert mode as used in most vim installations 
+** =evil-replace-with-register=
+#+BEGIN_SRC emacs-lisp
+  (use-package evil-replace-with-register
+    :config (progn
+              (setq evil-replace-with-register-key (kbd "gr"))
+              (evil-replace-with-register-install)))
+#+END_SRC
+
+** =evil-indent-plus=
+#+BEGIN_SRC emacs-lisp
+  (use-package evil-indent-plus
+    :config (evil-indent-plus-default-bindings))
+#+END_SRC
+** Esc exits everything
    #+BEGIN_SRC emacs-lisp
-     (use-package evil-escape
-       :config (progn
-                 (setq-default evil-escape-key-sequence "kj")
-                 (setq-default evil-escape-delay 0.2)
-                 (evil-escape-mode 1)))
+     ;;; esc quits
+     (defun minibuffer-keyboard-quit ()
+       "Abort recursive edit.
+     In Delete Selection mode, if the mark is active, just deactivate it;
+     then it takes a second \\[keyboard-quit] to abort the minibuffer."
+       (interactive)
+       (if (and delete-selection-mode transient-mark-mode mark-active)
+           (setq deactivate-mark  t)
+         (when (get-buffer "*Completions*") (delete-windows-on "*Completions*"))
+         (abort-recursive-edit)))
+     (define-key evil-normal-state-map [escape] 'keyboard-quit)
+     (define-key evil-visual-state-map [escape] 'keyboard-quit)
+     (define-key minibuffer-local-map [escape] 'minibuffer-keyboard-quit)
+     (define-key minibuffer-local-ns-map [escape] 'minibuffer-keyboard-quit)
+     (define-key minibuffer-local-completion-map [escape] 'minibuffer-keyboard-quit)
+     (define-key minibuffer-local-must-match-map [escape] 'minibuffer-keyboard-quit)
+     (define-key minibuffer-local-isearch-map [escape] 'minibuffer-keyboard-quit)
    #+END_SRC
 ** Switch to last buffer
 set C-tab to switch to the last buffer
@@ -219,6 +271,15 @@ Open the zsh terminal without asking for confirmation
     (interactive)
     (term "/bin/zsh"))
 #+END_SRC
+
+** Disable evil with certain states
+#+BEGIN_SRC emacs-lisp
+  (evil-set-initial-state 'tetris 'emacs)
+  (evil-set-initial-state 'bubbles 'emacs)
+  (evil-set-initial-state 'dun-mode 'emacs)
+  (evil-set-initial-state 'pong 'emacs)
+#+END_SRC
+
 * helm 
   Use =helm= for everything
 #+BEGIN_SRC emacs-lisp
@@ -334,8 +395,83 @@ Configure which mode must be enabled when opening a specific filetype.
   Use notmuch as a mail client
 #+BEGIN_SRC emacs-lisp
   (use-package notmuch
-    :config (setq notmuch-search-oldest-first nil)
+    :config (progn
+              (setq notmuch-search-oldest-first nil
+                             notmuch-multipart/alternative-discouraged '("text/plain" "text/html")
+                             notmuch-fcc-dirs "Sent +sent -inbox"
+                             notmuch-maildir-use-notmuch-insert t
+                             user-mail-address "bavo.mees@esfds.com"
+                             user-full-name "Bavo Mees"
+                             mail-host-address "esfds.com"
+                             mail-specify-envelope-from t
+                             message-kill-buffer-on-exit t
+                             message-send-mail-function 'message-send-mail-with-sendmail)
+
+              ; Use =evil= mode inside notmuch
+              (evil-set-initial-state 'notmuch-tree-mode 'normal)
+              (evil-set-initial-state 'notmuch-search-mode 'normal)
+              (evil-set-initial-state 'notmuch-hello-mode 'normal)
+              (evil-set-initial-state 'notmuch-message-mode 'normal)
+              (evil-set-initial-state 'notmuch-show-mode 'normal)
+
+              (evil-define-key 'normal notmuch-show-mode-map
+                "q" 'notmuch-bury-or-kill-this-buffer)
+
+              (evil-define-key 'normal notmuch-hello-mode-map
+                "q" 'notmuch-bury-or-kill-this-buffer
+                "s" 'notmuch-search
+                "g" 'notmuch-poll-and-refresh-this-buffer
+                "u" (lambda () (interactive) (notmuch-search "tag:unread"))
+                "i" (lambda () (interactive) (notmuch-search "tag:inbox")))
+
+              (evil-define-key 'normal notmuch-search-mode-map
+                "q" 'notmuch-bury-or-kill-this-buffer
+                "s" 'notmuch-search
+                "g" 'notmuch-poll-and-refresh-this-buffer
+                "+" 'notmuch-show-add-tag
+                "-" 'notmuch-show-remove-tag
+                [return] 'notmuch-search-show-thread)
+
+              (evil-define-key 'normal notmuch-show-mode-map
+                "n" 'notmuch-show-next-open-message
+                "N" 'notmuch-show-next-thread-show
+                "g" 'notmuch-poll-and-refresh-this-buffer
+                "r" 'notmuch-show-reply-sender
+                "+" 'notmuch-show-add-tag
+                "-" 'notmuch-show-remove-tag
+                "R" 'notmuch-show-reply
+                [return] 'notmuch-show-toggle-message))
+
     :bind (("C-c m" . notmuch)))
+
+#+END_SRC
+* Calendar/Agenda
+#+BEGIN_SRC emacs-lisp
+  (global-set-key (kbd "<f5>") 'calendar)
+  (define-key evil-normal-state-map (kbd "<f6>") 'my:pop-to-org-agenda)
+  (add-hook 'calendar-load-hook
+            (lambda ()
+              (calendar-set-date-style 'european)))
+  (setq calendar-week-start-day 1)
+#+END_SRC
+* Slack
+#+BEGIN_SRC emacs-lisp
+  (use-package slack
+    :commands (slack-start)
+    :init (setq slack-prefer-current-team t
+		slack-buffer-emojify t)
+    :config (progn (slack-register-team
+                    :name "magdavo"
+                    :default t
+                    :client-id "110859563911.176333687526"
+                    :client-secret 
+                    :token 
+                    :subscribed-channels '(general random))))
+
+  (use-package alert
+    :commands (alert)
+    :init (setq default-style 'notifier))
+
 #+END_SRC
 * MAGDA stuff
 ** Open a specific logging location
@@ -343,12 +479,12 @@ Configure which mode must be enabled when opening a specific filetype.
    This is a AList with the name of the location as a key and the command to open the logging file as value.
    #+BEGIN_SRC emacs-lisp
      (setq logging-locations
-           '(("magdagui-dev" . "/ssh:magdagui-dev:/sp/spdata/magdagui/logs/magdagui.log")
-             ("magdagui-tni" . "/ssh:magdagui-tni:/sp/spdata/magdagui/logs/magdagui.log")
+           '(("magdagui-dev" . "/ssh:magdagui-dev:/data/tomcat/domains/magdagui/logs/magdagui.log")
+             ("magdagui-tni" . "/ssh:magdagui-tni:/data/tomcat/domains/magdagui/logs/magdagui.log")
              ("ms-magda-priv-dienst-gw" . "/ssh:weblogic-dev:/export/home/weblogic/wl_servers/ms_magda_priv_dienst_gw_01/logs/ms_magda_priv_dienst_gw_01.out")
              ("ms-magda-ntpriv-dienst-gw" . "/ssh:weblogic-dev:/export/home/weblogic/wl_servers/ms_magda_ntpriv_dienst_gw_01/logs/ms_magda_ntpriv_dienst_gw_01.out")
-	     ("ms-magda-ntpriv-sched" . "/ssh:weblogic-dev:/export/home/weblogic/wl_servers/ms_magda_ntpriv_sched_01/logs/ms_magda_ntpriv_sched_01.out")
-	     ("SocZek.GeefLeefloonBedragen" . "/ssh:weblogic-dev:/var/opt/vipadmin/logs/soczek.geefleefloonbedragendienst-02.00/service.log")
+             ("ms-magda-ntpriv-sched" . "/ssh:weblogic-dev:/export/home/weblogic/wl_servers/ms_magda_ntpriv_sched_01/logs/ms_magda_ntpriv_sched_01.out")
+             ("SocZek.GeefLeefloonBedragen" . "/ssh:weblogic-dev:/var/opt/vipadmin/logs/soczek.geefleefloonbedragendienst-02.00/service.log")
              ("ms-magda-conn" . "/ssh:weblogic-dev:/export/home/weblogic/wl_servers/ms_magda_conn_01/logs/ms_magda_conn_01.out")
              ("ms-magda-admin" . "/ssh:weblogic-dev-admin:/export/weblogic/domains/magda_business/servers/AdminServer/logs/magda_business.log")))
 

@@ -1,0 +1,5 @@
+#!/bin/bash
+
+amixer set Master 5%+
+
+notify-send -i /usr/share/icons/Paper/16x16/status/stock_volume-max.png "$(/home/bavo/dotfiles/bin/query_volume)"
