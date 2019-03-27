@@ -1,0 +1,188 @@
+" <SPC> as the leader key
+let mapleader = " "
+
+set showmode
+set clipboard+=unnamed
+set incsearch
+set hlsearch
+set ignorecase
+set smartcase
+
+set surround
+
+" Goto 
+nnoremap gh    :action QuickJavaDoc<CR>
+nnoremap gr    :action FindUsages<CR>
+nnoremap gs    :action GotoSymbol<CR>
+nnoremap g,    :action JumpToNextChange<CR>
+nnoremap g;    :action JumpToLastChange<CR>
+" Jump to previously/next visited location
+nnoremap <c-i>    :action Forward<CR>
+nnoremap <c-o>    :action Back<CR>
+" Execute an action. Like <M-x>
+nnoremap <leader><Space>    :action GotoAction<CR>
+vnoremap <leader><Space>    <Esc>:action GotoAction<CR>
+" Focus last buffer
+nnoremap <leader><tab>    :action VimFilePrevious<CR>
+vnoremap <leader><tab>    <Esc>:action VimFilePrevious<CR>
+" Open the terminal window 
+nnoremap <leader>!    :action Terminal.OpenInTerminal<CR>
+vnoremap <leader>!    <Esc>:action Terminal.OpenInTerminal<CR>
+" Show usages for symbol
+nnoremap <leader>*    :action ShowUsages<CR>
+vnoremap <leader>*    <Esc>:action ShowUsages<CR>
+" Comment lines
+nnoremap <leader>;;    :action CommentByLineComment<CR>
+vnoremap <leader>;     :action CommentByLineComment<CR>:action VimVisualExitMode<CR>
+" Switch among recently opened files
+nnoremap <leader>bb    :action RecentFiles<CR>
+vnoremap <leader>bb    <Esc>:action RecentFiles<CR>
+" Close current tab
+nnoremap <leader>bd    :action CloseContent<CR>
+vnoremap <leader>bd    <Esc>:action CloseContent<CR>
+" Next Tab
+nnoremap <leader>bn    :action NextTab<CR>
+vnoremap <leader>bn    <Esc>:action NextTab<CR>
+" Substitute the whole content of the buffer with the content of your clipboard
+nnoremap <leader>bP    ggVGp<CR>
+vnoremap <leader>bP    <Esc>ggVGp<CR>
+" Previous Tab
+nnoremap <leader>bp    :action PreviousTab<CR>
+vnoremap <leader>bp    <Esc>:action PreviousTab<CR>
+" Open a new scratch buffer
+nnoremap <leader>bs    :action NewScratchBuffer<CR>
+vnoremap <leader>bs    <Esc>:action NewScratchBuffer<CR>
+" Reopen last closed tab
+nnoremap <leader>bu    :action ReopenClosedTab<CR>
+vnoremap <leader>bu    <Esc>:action ReopenClosedTab<CR>
+" Close a window together with its tabs
+nnoremap <leader>bx    :action CloseAllEditors<CR>
+vnoremap <leader>bx    <Esc>:action CloseAllEditors<CR>
+" Copy whole buffer
+nnoremap <leader>bY    :%y<CR>
+vnoremap <leader>bY    <Esc>:%y<CR>
+" Close other tabs in current window
+nnoremap <leader>b<C-d>    :action CloseAllEditorsButActive<CR>
+vnoremap <leader>b<C-d>    <Esc>:action CloseAllEditorsButActive<CR>
+" Go to previous error
+nnoremap <leader>eN    :action GotoPreviousError<CR>
+vnoremap <leader>eN    <Esc>:action GotoPreviousError<CR>
+nnoremap <leader>ep    :action GotoPreviousError<CR>
+vnoremap <leader>ep    <Esc>:action GotoPreviousError<CR>
+" Go to next error
+nnoremap <leader>en    :action GotoNextError<CR>
+vnoremap <leader>en    <Esc>:action GotoNextError<CR>
+" Explain error at point
+nnoremap <leader>ee    :action ShowErrorDescription<CR>
+vnoremap <leader>ee    <Esc>:action ShowErrorDescription<CR>
+" Resolve error at point
+nnoremap <leader>er    :action ShowIntentionActions<CR>
+vnoremap <leader>er    <Esc>:action ShowIntentionActions<CR>
+" Git menu 
+nnoremap <leader>gg    :action Vcs.QuickListPopupAction<CR>
+vnoremap <leader>gg    <Esc>:action Vcs.QuickListPopupAction<CR>
+" Git commit
+nnoremap <leader>gc    :action Git.Commit.And.Push.Executor<CR>
+vnoremap <leader>gc    <Esc>:action Git.Commit.And.Push.Executor<CR>
+" Show log of current file
+nnoremap <leader>gh    :action Vcs.ShowTabbedFileHistory<CR>
+vnoremap <leader>gh    <Esc>:action Vcs.ShowTabbedFileHistory<CR>
+" Show local changes (git status)
+nnoremap <leader>gs    :action Vcs.Show.Local.Changes<CR>
+vnoremap <leader>gs    <Esc>:action Vcs.Show.Local.Changes<CR>
+" Update project (git pull)
+nnoremap <leader>gp    :action Git.Pull<CR>
+vnoremap <leader>gp    <Esc>:action Git.Pull<CR>
+" Push changes (git push)
+nnoremap <leader>gP    :action Vcs.UpdateProject<CR>
+vnoremap <leader>gP    <Esc>:action Vcs.UpdateProject<CR>
+" Annotate. Show when each line was last edited and by whom.
+nnoremap <leader>gvg    :action Annotate<CR>
+vnoremap <leader>gvg    <Esc>:action Annotate<CR>
+" Show log (git log)
+nnoremap <leader>gl    :action Vcs.Show.Log<CR>
+vnoremap <leader>gl    <Esc>:action Vcs.Show.Log<CR>
+" Run file
+nnoremap <leader>rR    :action RunClass<CR>
+vnoremap <leader>rR    <Esc>:action RunClass<CR>
+nnoremap <leader>rr    :action Run<CR>
+vnoremap <leader>rr    <Esc>:action Run<CR>
+" Split window right
+nnoremap <leader>w/    :action SplitVertically<CR>
+vnoremap <leader>w/    <Esc>:action SplitVertically<CR>
+nnoremap <leader>wv    :action SplitVertically<CR>
+vnoremap <leader>wv    <Esc>:action SplitVertically<CR>
+" Split window below
+nnoremap <leader>w-    :action SplitHorizontally<CR>
+vnoremap <leader>w-    <Esc>:action SplitHorizontally<CR>
+nnoremap <leader>ws    :action SplitHorizontally<CR>
+vnoremap <leader>ws    <Esc>:action SplitHorizontally<CR>
+" Close window
+nnoremap <leader>wd    :action VimWindowClose<CR>
+vnoremap <leader>wd    <esc>:action VimWindowClose<CR>
+nnoremap <leader>wx    :action VimWindowClose<CR>
+vnoremap <leader>wx    <esc>:action VimWindowClose<CR>
+" Focus window far left
+nnoremap <leader>wH    :action VimWindowLeft<CR>10@:
+vnoremap <leader>wH    <Esc>:action VimWindowLeft<CR>10@:
+" Focus window left
+nnoremap <leader>wh         :action VimWindowLeft<CR>
+vnoremap <leader>wh         <Esc>:action VimWindowLeft<CR>
+nnoremap <leader>w<Left>    :action VimWindowLeft<CR>
+vnoremap <leader>w<Left>    <Esc>:action VimWindowLeft<CR>
+" Focus window very bottom
+nnoremap <leader>wJ    :action VimWindowDown<CR>10@:
+vnoremap <leader>wJ    <Esc>:action VimWindowDown<CR>10@:
+" Focus window down
+nnoremap <leader>wj         :action VimWindowDown<CR>
+vnoremap <leader>wj         <Esc>:action VimWindowDown<CR>
+nnoremap <leader>w<Down>    :action VimWindowDown<CR>
+vnoremap <leader>w<Down>    <Esc>:action VimWindowDown<CR>
+" Focus window very top
+nnoremap <leader>wK    :action VimWindowUp<CR>10@:
+vnoremap <leader>wK    <Esc>:action VimWindowUp<CR>10@:
+" Focus window up
+nnoremap <leader>wk       :action VimWindowUp<CR>
+vnoremap <leader>wk       <Esc>:action VimWindowUp<CR>
+nnoremap <leader>w<Up>    :action VimWindowUp<CR>
+vnoremap <leader>w<Up>    <Esc>:action VimWindowUp<CR>
+" Focus window far right
+nnoremap <leader>wL    :action VimWindowRight<CR>10@:
+vnoremap <leader>wL    <Esc>:action VimWindowRight<CR>10@:
+" Focus window right
+nnoremap <leader>wl          :action VimWindowRight<CR>
+vnoremap <leader>wl          <Esc>:action VimWindowRight<CR>
+nnoremap <leader>w<Right>    :action VimWindowRight<CR>
+vnoremap <leader>w<Right>    <Esc>:action VimWindowRight<CR>
+" Focus next project
+nnoremap <leader>wo    :action NextProjectWindow<CR>
+vnoremap <leader>wo    <Esc>:action NextProjectWindow<CR>
+" Focus next window
+nnoremap <leader>ww    :action VimWindowNext<CR>
+vnoremap <leader>ww    <Esc>:action VimWindowNext<CR>
+" Increment number. As usual you can press '.' to repeat this action again.
+nnoremap <leader>n+    :action VimChangeNumberInc<CR>
+vnoremap <leader>n+    <Esc>:action VimChangeNumberInc<CR>
+nnoremap <leader>n=    :action VimChangeNumberInc<CR>
+vnoremap <leader>n=    <Esc>:action VimChangeNumberInc<CR>
+" Decrement number. As usual you can press '.' to repeat this action again.
+nnoremap <leader>n-    :action VimChangeNumberDec<CR>
+vnoremap <leader>n-    <Esc>:action VimChangeNumberDec<CR>
+" Toggle distraction free mode
+nnoremap <leader>td    :action ToggleDistractionFreeMode<CR>
+vnoremap <leader>td    <Esc>:action ToggleDistractionFreeMode<CR>
+" Toggle show indent guide
+nnoremap <leader>ti    :action EditorToggleShowIndentLines<CR>
+vnoremap <leader>ti    <Esc>:action EditorToggleShowIndentLines<CR>
+" Toggle truncate lines
+nnoremap <leader>tl    :action EditorGutterToggleGlobalSoftWraps<CR>
+vnoremap <leader>tl    <Esc>:action EditorGutterToggleGlobalSoftWraps<CR>
+" Toggle line numbers
+nnoremap <leader>tn    :action EditorGutterToggleGlobalLineNumbers<CR>
+vnoremap <leader>tn    <Esc>:action EditorGutterToggleGlobalLineNumbers<CR>
+" Toggle Show Whitespaces
+nnoremap <leader>tw    :action EditorToggleShowWhitespaces<CR>
+vnoremap <leader>tw    <Esc>:action EditorToggleShowWhitespaces<CR>
+" Insert snippet
+nnoremap <leader>is    :action InsertLiveTemplate<CR>
+vnoremap <leader>is    <Esc>:action InsertLiveTemplate<CR>
