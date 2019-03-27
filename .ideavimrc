@@ -26,11 +26,13 @@ vnoremap <leader><Space>    <Esc>:action GotoAction<CR>
 nnoremap <leader><tab>    :action VimFilePrevious<CR>
 vnoremap <leader><tab>    <Esc>:action VimFilePrevious<CR>
 " Open the terminal window 
-nnoremap <leader>!    :action Terminal.OpenInTerminal<CR>
-vnoremap <leader>!    <Esc>:action Terminal.OpenInTerminal<CR>
+nnoremap <leader>!    :action ActivateTerminalToolWindow<CR>
+vnoremap <leader>!    <Esc>:action ActivateTerminalToolWindow<CR>
 " Show usages for symbol
 nnoremap <leader>*    :action ShowUsages<CR>
 vnoremap <leader>*    <Esc>:action ShowUsages<CR>
+nnoremap <leader>$    :action ShowUsages<CR>
+vnoremap <leader>$    <Esc>:action ShowUsages<CR>
 " Comment lines
 nnoremap <leader>;;    :action CommentByLineComment<CR>
 vnoremap <leader>;     :action CommentByLineComment<CR>:action VimVisualExitMode<CR>
@@ -52,6 +54,9 @@ vnoremap <leader>bp    <Esc>:action PreviousTab<CR>
 " Open a new scratch buffer
 nnoremap <leader>bs    :action NewScratchBuffer<CR>
 vnoremap <leader>bs    <Esc>:action NewScratchBuffer<CR>
+" Open a new scratch buffer
+nnoremap <leader>bS    :action Scratch.ChangeLanguage<CR>
+vnoremap <leader>bS    <Esc>:action Scratch.ChangeLanguage<CR>
 " Reopen last closed tab
 nnoremap <leader>bu    :action ReopenClosedTab<CR>
 vnoremap <leader>bu    <Esc>:action ReopenClosedTab<CR>
@@ -94,11 +99,11 @@ vnoremap <leader>gs    <Esc>:action Vcs.Show.Local.Changes<CR>
 nnoremap <leader>gp    :action Git.Pull<CR>
 vnoremap <leader>gp    <Esc>:action Git.Pull<CR>
 " Push changes (git push)
-nnoremap <leader>gP    :action Vcs.UpdateProject<CR>
-vnoremap <leader>gP    <Esc>:action Vcs.UpdateProject<CR>
+nnoremap <leader>gP    :action Vcs.Push<CR>
+vnoremap <leader>gP    <Esc>:action Vcs.Push<CR>
 " Annotate. Show when each line was last edited and by whom.
-nnoremap <leader>gvg    :action Annotate<CR>
-vnoremap <leader>gvg    <Esc>:action Annotate<CR>
+nnoremap <leader>ga    :action Annotate<CR>
+vnoremap <leader>ga    <Esc>:action Annotate<CR>
 " Show log (git log)
 nnoremap <leader>gl    :action Vcs.Show.Log<CR>
 vnoremap <leader>gl    <Esc>:action Vcs.Show.Log<CR>
@@ -160,6 +165,9 @@ vnoremap <leader>wo    <Esc>:action NextProjectWindow<CR>
 " Focus next window
 nnoremap <leader>ww    :action VimWindowNext<CR>
 vnoremap <leader>ww    <Esc>:action VimWindowNext<CR>
+" Hide all windows except the ones with code
+nnoremap <leader>wo    :action HideAllWindows<CR>
+vnoremap <leader>wo    <Esc>:action HideAllWindows<CR>
 " Increment number. As usual you can press '.' to repeat this action again.
 nnoremap <leader>n+    :action VimChangeNumberInc<CR>
 vnoremap <leader>n+    <Esc>:action VimChangeNumberInc<CR>
@@ -183,6 +191,31 @@ vnoremap <leader>tn    <Esc>:action EditorGutterToggleGlobalLineNumbers<CR>
 " Toggle Show Whitespaces
 nnoremap <leader>tw    :action EditorToggleShowWhitespaces<CR>
 vnoremap <leader>tw    <Esc>:action EditorToggleShowWhitespaces<CR>
+" Toggle Gutter icons
+nnoremap <leader>tg    :action EditorToggleShowGutterIcons<CR>
+vnoremap <leader>tg    <Esc>:action EditorToggleShowGutterIcons<CR>
 " Insert snippet
 nnoremap <leader>is    :action InsertLiveTemplate<CR>
 vnoremap <leader>is    <Esc>:action InsertLiveTemplate<CR>
+" Show registers
+nnoremap <leader>re    :reg<CR>
+vnoremap <leader>re    <Esc>:reg<CR>
+" Create a new Element.
+nnoremap <leader>fN      :action NewElement<CR>
+vnoremap <leader>fN      <Esc>:action NewElement<CR>
+" Create a new class. You can also create enum, interface and more.
+nnoremap <leader>fn      :action NewClass<CR>
+vnoremap <leader>fn      <Esc>:action NewClass<CR>
+" Reload .ideavimrc
+nnoremap <leader>fR    :source ~/.ideavimrc<CR>
+vnoremap <leader>fR    <Esc>:source ~/.ideavimrc<CR>
+" Find files
+nnoremap <leader>ff    :action GotoFile<CR>
+vnoremap <leader>ff    <Esc>:action GotoFile<CR>
+" Copy file path
+nnoremap <leader>fyy    :action CopyPaths<CR>
+vnoremap <leader>fyy    <Esc>:action CopyPaths<CR>
+" Reformat whole buffer
+nnoremap <leader>=    :action ReformatCode<CR>
+" Reformat selected lines
+vnoremap <leader>=    :action ReformatCode<CR>
