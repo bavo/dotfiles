@@ -1,8 +1,8 @@
+
 " <SPC> as the leader key
 let mapleader = " "
 
 set showmode
-set clipboard+=unnamed
 set incsearch
 set hlsearch
 set ignorecase
@@ -14,6 +14,9 @@ set surround
 nnoremap gh    :action QuickJavaDoc<CR>
 nnoremap gr    :action FindUsages<CR>
 nnoremap gs    :action GotoSymbol<CR>
+nnoremap gc    :action GotoClass<CR>
+nnoremap gf    :action GotoFile<CR>
+nnoremap gt    :action GotoTest<CR>
 nnoremap g,    :action JumpToNextChange<CR>
 nnoremap g;    :action JumpToLastChange<CR>
 " Jump to previously/next visited location
@@ -64,8 +67,8 @@ vnoremap <leader>bu    <Esc>:action ReopenClosedTab<CR>
 nnoremap <leader>bx    :action CloseAllEditors<CR>
 vnoremap <leader>bx    <Esc>:action CloseAllEditors<CR>
 " Copy whole buffer
-nnoremap <leader>bY    :%y<CR>
-vnoremap <leader>bY    <Esc>:%y<CR>
+nnoremap <leader>by    :%y<CR>
+vnoremap <leader>by    <Esc>:%y<CR>
 " Close other tabs in current window
 nnoremap <leader>b<C-d>    :action CloseAllEditorsButActive<CR>
 vnoremap <leader>b<C-d>    <Esc>:action CloseAllEditorsButActive<CR>
