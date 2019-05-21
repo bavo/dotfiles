@@ -17,6 +17,7 @@ nnoremap gs    :action GotoSymbol<CR>
 nnoremap gc    :action GotoClass<CR>
 nnoremap gf    :action GotoFile<CR>
 nnoremap gt    :action GotoTest<CR>
+nnoremap gi    :action GotoImplementation<CR>
 nnoremap g,    :action JumpToNextChange<CR>
 nnoremap g;    :action JumpToLastChange<CR>
 " Jump to previously/next visited location
@@ -113,6 +114,8 @@ vnoremap <leader>gl    <Esc>:action Vcs.Show.Log<CR>
 " Run file
 nnoremap <leader>rR    :action RunClass<CR>
 vnoremap <leader>rR    <Esc>:action RunClass<CR>
+nnoremap <leader>rc    :action RunClass<CR>
+vnoremap <leader>rc    <Esc>:action RunClass<CR>
 nnoremap <leader>rr    :action Run<CR>
 vnoremap <leader>rr    <Esc>:action Run<CR>
 " Split window right
@@ -218,6 +221,9 @@ vnoremap <leader>ff    <Esc>:action GotoFile<CR>
 " Copy file path
 nnoremap <leader>fyy    :action CopyPaths<CR>
 vnoremap <leader>fyy    <Esc>:action CopyPaths<CR>
+" Copy file
+nnoremap <leader>fc    :action CopyElement<CR>
+vnoremap <leader>fc    <Esc>:action CopyElement<CR>
 " Reformat whole buffer
 nnoremap <leader>=    :action ReformatCode<CR>
 " Reformat selected lines
@@ -233,4 +239,71 @@ nnoremap <leader>sp    :action FindInPath<CR>
 vnoremap <leader>sp    <Esc>:action FindInPath<CR>
 nnoremap <leader>fg    :action FindInPath<CR>
 vnoremap <leader>fg    <Esc>:action FindInPath<CR>
+" Open project
+nnoremap <leader>po    :action WelcomeScreen.OpenProject<CR>
+vnoremap <leader>po    <Esc>:action WelcomeScreen.OpenProject<CR>
+" Open recent project
+nnoremap <leader>pp    :action ManageRecentProjects<CR>
+vnoremap <leader>pp    <Esc>:action ManageRecentProjects<CR>
+" Run project
+nnoremap <leader>pr    :action Run<CR>
+vnoremap <leader>pr    <Esc>:action Run<CR>
+" Show documetation
+nnoremap <leader>hh      :action QuickJavaDoc<CR>
+vnoremap <leader>hh      <Esc>:action QuickJavaDoc<CR>
+" Show parameters
+nnoremap <leader>hp      :action ParameterInfo<CR>
+vnoremap <leader>hp      <Esc>:action ParameterInfo<CR>
+" Show implementation
+nnoremap <leader>hi      :action QuickImplementations<CR>
+vnoremap <leader>hi      <Esc>:action QuickImplementations<CR>
+" Show usages for symbol
+nnoremap <leader>hu      :action ShowUsages<CR>
+vnoremap <leader>hu      <Esc>:action ShowUsages<CR>
+" Find usages for symbol
+nnoremap <leader>hU      :action FindUsages<CR>
+vnoremap <leader>hU      <Esc>:action FindUsages<CR>
+" Create constructor
+nnoremap <leader>mc      :action GenerateConstructor<CR>
+vnoremap <leader>mc      <Esc>:action GenerateConstructor<CR>
+" Extract method
+nnoremap <leader>mem    :action ExtractMethod<CR>
+vnoremap <leader>mem    <Esc>:action ExtractMethod<CR>
+" Extract variable
+nnoremap <leader>mev    :action IntroduceVariable<CR>
+vnoremap <leader>mev    <Esc>:action IntroduceVariable<CR>
+" Extract field
+nnoremap <leader>mef    :action IntroduceField<CR>
+vnoremap <leader>mef    <Esc>:action IntroduceField<CR>
+" Extract constant
+nnoremap <leader>mec    :action IntroduceConstant<CR>
+vnoremap <leader>mec    <Esc>:action IntroduceConstant<CR>
+" Extract parameter
+nnoremap <leader>mep    :action IntroduceParameter<CR>
+vnoremap <leader>mep    <Esc>:action IntroduceParameter<CR>
+" Extract superclass
+nnoremap <leader>mes    :action ExtractSuperclass<CR>
+vnoremap <leader>mes    <Esc>:action ExtractSuperclass<CR>
+" Generate getter and setter
+nnoremap <leader>mG      :action GenerateGetter<CR>
+vnoremap <leader>mG      <Esc>:action GenerateGetter<CR>
+" Select what to generate
+nnoremap <leader>mg      :action Generate<CR>
+vnoremap <leader>mg      <Esc>:action Generate<CR>
+" Implement Methods
+nnoremap <leader>mi      :action ImplementMethods<CR>
+vnoremap <leader>mi      <Esc>:action ImplementMethods<CR>
+" Create a new Element.
+nnoremap <leader>mN      :action NewElement<CR>
+vnoremap <leader>mN      <Esc>:action NewElement<CR>
+" Create a new class. You can also create enum, interface and more.
+nnoremap <leader>mn      :action NewClass<CR>
+vnoremap <leader>mn      <Esc>:action NewClass<CR>
+" Choose a refactoring action
+nnoremap <leader>mR      :action Refactorings.QuickListPopupAction<CR>
+vnoremap <leader>mR      <Esc>:action Refactorings.QuickListPopupAction<CR>
+" Rename symbol
+nnoremap <leader>mr      :action RenameElement<CR>
+vnoremap <leader>mr      <Esc>:action RenameElement<CR>
+
 
