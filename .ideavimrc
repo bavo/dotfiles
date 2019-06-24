@@ -1,4 +1,3 @@
-
 " <SPC> as the leader key
 let mapleader = " "
 
@@ -10,7 +9,7 @@ set smartcase
 
 set surround
 
-" Goto 
+" Goto
 nnoremap gh    :action QuickJavaDoc<CR>
 nnoremap gr    :action FindUsages<CR>
 nnoremap gs    :action GotoSymbol<CR>
@@ -29,7 +28,7 @@ vnoremap <leader><Space>    <Esc>:action GotoAction<CR>
 " Focus last buffer
 nnoremap <leader><tab>    :action VimFilePrevious<CR>
 vnoremap <leader><tab>    <Esc>:action VimFilePrevious<CR>
-" Open the terminal window 
+" Open the terminal window
 nnoremap <leader>!    :action ActivateTerminalToolWindow<CR>
 vnoremap <leader>!    <Esc>:action ActivateTerminalToolWindow<CR>
 " Show usages for symbol
@@ -114,10 +113,19 @@ vnoremap <leader>gl    <Esc>:action Vcs.Show.Log<CR>
 " Run file
 nnoremap <leader>rR    :action RunClass<CR>
 vnoremap <leader>rR    <Esc>:action RunClass<CR>
-nnoremap <leader>rc    :action RunClass<CR>
-vnoremap <leader>rc    <Esc>:action RunClass<CR>
+nnoremap <leader>rt    :action RunClass<CR>
+vnoremap <leader>rt    <Esc>:action RunClass<CR>
+nnoremap <leader>rc    mmgg:action RunClass<CR>
+vnoremap <leader>rc    <Esc>mmgg :action RunClass<CR>
 nnoremap <leader>rr    :action Run<CR>
 vnoremap <leader>rr    <Esc>:action Run<CR>
+nnoremap <leader>rd    :action Debug<CR>
+vnoremap <leader>rd    <Esc>:action Debug<CR>
+nnoremap <leader>rD    :action DebugClass<CR>
+vnoremap <leader>rD    <Esc>:action DebugClass<CR>
+" Run Anything
+nnoremap <leader>ra    :action ChooseRunConfiguration<CR>
+vnoremap <leader>ra    <Esc>:action ChooseRunConfiguration<CR>
 " Split window right
 nnoremap <leader>w/    :action SplitVertically<CR>
 vnoremap <leader>w/    <Esc>:action SplitVertically<CR>
@@ -224,6 +232,9 @@ vnoremap <leader>fyy    <Esc>:action CopyPaths<CR>
 " Copy file
 nnoremap <leader>fc    :action CopyElement<CR>
 vnoremap <leader>fc    <Esc>:action CopyElement<CR>
+" Movy file
+nnoremap <leader>fm    :action Move<CR>
+vnoremap <leader>fm    <Esc>:action Move<CR>
 " Reformat whole buffer
 nnoremap <leader>=    :action ReformatCode<CR>
 " Reformat selected lines
@@ -233,15 +244,18 @@ nnoremap <leader>sc    :nohlsearch<CR>
 vnoremap <leader>sc    <Esc>:nohlsearch<CR>
 " Search everywhere
 nnoremap <leader>ss    :action SearchEverywhere<CR>
-vnoremap <leader>ss    <Esc>:action SearchEverywhere<CR>
+vnoremap <leader>ss    :action SearchEverywhere<CR>
 " Search in project
 nnoremap <leader>sp    :action FindInPath<CR>
-vnoremap <leader>sp    <Esc>:action FindInPath<CR>
+vnoremap <leader>sp    :action FindInPath<CR>
 nnoremap <leader>fg    :action FindInPath<CR>
-vnoremap <leader>fg    <Esc>:action FindInPath<CR>
+vnoremap <leader>fg    :action FindInPath<CR>
 " Open project
 nnoremap <leader>po    :action WelcomeScreen.OpenProject<CR>
 vnoremap <leader>po    <Esc>:action WelcomeScreen.OpenProject<CR>
+" Quit project
+nnoremap <leader>pq    :action CloseProject<CR>
+vnoremap <leader>pq    <Esc>:action CloseProject<CR>
 " Open recent project
 nnoremap <leader>pp    :action ManageRecentProjects<CR>
 vnoremap <leader>pp    <Esc>:action ManageRecentProjects<CR>
@@ -302,8 +316,30 @@ vnoremap <leader>mn      <Esc>:action NewClass<CR>
 " Choose a refactoring action
 nnoremap <leader>mR      :action Refactorings.QuickListPopupAction<CR>
 vnoremap <leader>mR      <Esc>:action Refactorings.QuickListPopupAction<CR>
+" Build project
+nnoremap <leader>mc      :action CompileDirty<CR>
+vnoremap <leader>mc      <Esc>:action CompileDirty<CR>
 " Rename symbol
 nnoremap <leader>mr      :action RenameElement<CR>
 vnoremap <leader>mr      <Esc>:action RenameElement<CR>
-
-
+" Collapse region
+nnoremap <leader>-      :action CollapseRegion<CR>
+vnoremap <leader>-      <Esc>:action CollapseRegion<CR>
+" Expand region
+nnoremap <leader>+      :action ExpandRegion<CR>
+vnoremap <leader>+      <Esc>:action ExpandRegion<CR>
+" Toggle breakpoint
+nnoremap <leader>mdb    :action ToggleLineBreakpoint<CR>
+vnoremap <leader>mdb    <Esc>:action ToggleLineBreakpoint<CR>
+" Clear all breakpoints
+nnoremap <leader>mdC    :action Debugger.RemoveAllBreakpointsInFile<CR>
+vnoremap <leader>mdC    <Esc>:action Debugger.RemoveAllBreakpointsInFile<CR>
+" Continue (Go to next breakpoint). 'c' is the same as gdb.
+nnoremap <leader>mdc    :action Resume<CR>
+vnoremap <leader>mdc    <Esc>:action Resume<CR>
+" Step out (same as "finish" in gdb).
+nnoremap <leader>mdo    :action StepOut<CR>
+vnoremap <leader>mdo    <Esc>:action StepOut<CR>
+" Step (Step into). 's' is the same as gdb.
+nnoremap <leader>mds    :action StepInto<CR>
+vnoremap <leader>mds    <Esc>:action StepInto<CR>
